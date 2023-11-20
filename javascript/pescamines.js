@@ -1,6 +1,6 @@
 //Variables GLOBALES
-let filas;
-let columnas;
+let filas = 0;
+let columnas = 0;
 
 //Demana numeros
 function iniciarPartida() {
@@ -26,6 +26,7 @@ function iniciarPartida() {
     }
 
     crearTaulell(filas, columnas);
+    setMines();
 }
 
 
@@ -40,27 +41,46 @@ function crearTaulell(files, columnes) {
     let div = document.getElementById("taulell");
 
     taulell += `<table>`;
-
-    for (let i=0; i<files; i++) {
-        
+    for (let i=0; i<files; i++) {        
         taulell += `<tr>`;
 
         for (let j=0; j<columnes; j++) {
-
-            taulell += `<td data-mina="false">`;
+            taulell += `<td id="${i}_${j}" data-mina="false">`;
             
-            taulell += `<img id="${i},${j}" type="button" onclick="obreCasella('${i}, ${j}')" src="img/fons20px.jpg" width="20px">`;
+            taulell += `<img type="button" onclick="obreCasella(${i}, ${j})" src="img/fons20px.jpg" width="20px">`;
             taulell += `<td>`;
         }
         taulell += `<tr>`;
     }
-
-    taulell += `</table>`;
+    taulell += `</table>`;    
     div.innerHTML = taulell;
 }
 
+function obreCasella(x,y) {    
+    let casella = document.getElementById(`${x}_${y}`);
 
-//FUNCIONES EXTRAS
-function entraAlRango() {
-    
+    casella.innerHTML = "";
+}
+//estableix propietat de mina a true a un 17% de caselles totals
+function setMines() {
+    let totalTrue = Math.floor((filas*columnas)*0.17);
+    alert(totalTrue);
+    for (let i=0; i<totalTrue; i++) {
+        let minaX = Math.floor(Math.random()*(filas));  //asegurar valor valido
+        let minaY = Math.floor(Math.random()*(columnas));
+        let casilla = document.getElementById(`${minaX}_${minaY}`);
+        casilla.dataset.mina = 'true';
+    }
+
+}
+//recorrerà taulell i apunta el número de mines adjacents de cada casella en una custom html: data-num-mines iniciada a 0
+function calculaAdjacents() {
+
+}
+function esMina() {
+    return false;
+}
+//estableix a la casella de posicio l'atribut del número de mines a nMinesAdjacents
+function setMinesAdjacents(x, y, nMinesAdjacents) {
+
 }
