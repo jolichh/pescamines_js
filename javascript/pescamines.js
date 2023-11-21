@@ -37,10 +37,9 @@ function iniciarPartida() {
 
 //Crea de manera dinàmica
 function crearTaulell(files, columnes) {
-    let taulell = "";    
     let div = document.getElementById("taulell");
 
-    taulell += `<table>`;
+    let taulell = `<table>`;
     for (let i=0; i<files; i++) {        
         taulell += `<tr>`;
 
@@ -58,8 +57,9 @@ function crearTaulell(files, columnes) {
 
 function obreCasella(x,y) {    
     let casella = document.getElementById(`${x}_${y}`);
-
+esMina(x,y);
     casella.innerHTML = "";
+    
 }
 //estableix propietat de mina a true a un 17% de caselles totals
 function setMines() {
@@ -76,8 +76,22 @@ function setMines() {
 //recorrerà taulell i apunta el número de mines adjacents de cada casella en una custom html: data-num-mines iniciada a 0
 function calculaAdjacents() {
 
+    for (let i=0; i<filas;i++) {
+        for (let j=0; j<columnes; j++) {
+            comptaMinas();
+        }
+    }
 }
-function esMina() {
+//fa recorregut per veure si hi ha mines de les caselles adjacents a la seva posicio
+function comptaMinas() {
+
+}
+function esMina(x, y) {
+    let casella = document.getElementById(`${x}_${y}`);
+    if (casella.dataset.mina === 'true') {
+        alert("BOOM!");
+        return true;
+    }
     return false;
 }
 //estableix a la casella de posicio l'atribut del número de mines a nMinesAdjacents
