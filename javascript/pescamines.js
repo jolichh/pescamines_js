@@ -27,6 +27,7 @@ function iniciarPartida() {
 
     crearTaulell(filas, columnas);
     setMines();
+    calculaAdjacents();
 }
 
 
@@ -62,7 +63,7 @@ function obreCasella(x,y) {
         casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`;        
     } 
     if (!esMina(x,y)) {
-        casella.innerHTML = `<p>N</p>`;        
+        casella.innerHTML = `<p>${casella.dataset.numMines}</p>`;        
     }    
 }
 //estableix propietat de mina a true a un 17% de caselles totals
@@ -78,16 +79,37 @@ function setMines() {
 
 }
 //recorrerà taulell i apunta el número de mines adjacents de cada casella en una custom html: data-num-mines iniciada a 0
-function calculaAdjacents(x,y) {
-    let nMines = 0;
+function calculaAdjacents() {
+let counter = 0;
+    
+    //recorre todo el tablero
     for (let i=0; i<filas;i++) {
-        for (let j=columnas; j<columnas; j++) {
-            if (esMina(i,j)) {
-                nMines++;
-            } 
-        }
+        for (let j=0; j<columnas; j++) {
+            //para cada casilla recorre sus adyacentes
+            //en caso de ser una mina salta a la siguiente
+            if (!esMina(i,j)) {
+                //recorre las 8+1 casillas adyacentes
+                let nMines = 0;
+                for (let k=i-1; k<i+1;k++) {
+                    //asegura dentro de rang de filas
+                    if (k>=0 && k<filas) { 
+                        //hasta aqui entraXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                        for (let l=j-1;l<j+1;l++) {
+                            //asegura dentro de rango columnas
+                            if (l>=0 && l<columnas) { 
+                                if (esMina(k,l)) {
+                                    nMines++;
+                                }
+                            }
+                        }
+                    }
+                }
+                //setting recuento de minas adyacentes
+                setMinesAdjacents(i,j, nMines);   
+            }        
+            counter++;     
+        }       
     }
-    setMinesAdjacents(x,y, nMines);
 }
 
 function esMina(x, y) {
@@ -98,7 +120,7 @@ function esMina(x, y) {
     return false;
 }
 //estableix a la casella de posicio l'atribut del número de mines a nMinesAdjacents
-function setMinesAdjacents(x, y, nMinesAdjacents) {    
+function setMinesAdjacents(x, y, nMinesAdjacents) {   
     let casella = document.getElementById(`${x}_${y}`);   
     casella.dataset.numMines = `${nMinesAdjacents}`;
 }
