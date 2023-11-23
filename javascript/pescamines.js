@@ -37,18 +37,17 @@ function iniciarPartida() {
 
 //Crea de manera dinàmica
 function crearTaulell(files, columnes) {
-    let taulell = "";    
     let div = document.getElementById("taulell");
 
-    taulell += `<table>`;
+    let taulell = `<table>`;
     for (let i=0; i<files; i++) {        
         taulell += `<tr>`;
 
         for (let j=0; j<columnes; j++) {
-            taulell += `<td id="${i}_${j}" data-mina="false">`;
+            taulell += `<td id="${i}_${j}" data-mina="false" data-num-mines="0">`;
             
             taulell += `<img type="button" onclick="obreCasella(${i}, ${j})" src="img/fons20px.jpg" width="20px">`;
-            taulell += `<td>`;
+            taulell += `</td>`;
         }
         taulell += `<tr>`;
     }
@@ -57,9 +56,14 @@ function crearTaulell(files, columnes) {
 }
 
 function obreCasella(x,y) {    
-    let casella = document.getElementById(`${x}_${y}`);
-
-    casella.innerHTML = "";
+    let casella = document.getElementById(`${x}_${y}`);   
+    //si hay mina muestra imagen, si no hay, calcula adjacents
+    if (esMina(x,y)) {
+        casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`;        
+    } 
+    if (!esMina(x,y)) {
+        casella.innerHTML = `<p>N</p>`;        
+    }    
 }
 //estableix propietat de mina a true a un 17% de caselles totals
 function setMines() {
@@ -74,13 +78,27 @@ function setMines() {
 
 }
 //recorrerà taulell i apunta el número de mines adjacents de cada casella en una custom html: data-num-mines iniciada a 0
-function calculaAdjacents() {
-
+function calculaAdjacents(x,y) {
+    let nMines = 0;
+    for (let i=0; i<filas;i++) {
+        for (let j=columnas; j<columnas; j++) {
+            if (esMina(i,j)) {
+                nMines++;
+            } 
+        }
+    }
+    setMinesAdjacents(x,y, nMines);
 }
-function esMina() {
+
+function esMina(x, y) {
+    let casella = document.getElementById(`${x}_${y}`);
+    if (casella.dataset.mina == 'true') {
+        return true;
+    }
     return false;
 }
 //estableix a la casella de posicio l'atribut del número de mines a nMinesAdjacents
-function setMinesAdjacents(x, y, nMinesAdjacents) {
-
+function setMinesAdjacents(x, y, nMinesAdjacents) {    
+    let casella = document.getElementById(`${x}_${y}`);   
+    casella.dataset.numMines = `${nMinesAdjacents}`;
 }
