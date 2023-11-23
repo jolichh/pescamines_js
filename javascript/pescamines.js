@@ -90,11 +90,10 @@ let counter = 0;
             if (!esMina(i,j)) {
                 //recorre las 8+1 casillas adyacentes
                 let nMines = 0;
-                for (let k=i-1; k<i+1;k++) {
+                for (let k=i-1; k<=i+1;k++) {
                     //asegura dentro de rang de filas
                     if (k>=0 && k<filas) { 
-                        //hasta aqui entraXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                        for (let l=j-1;l<j+1;l++) {
+                        for (let l=j-1;l<=j+1;l++) {
                             //asegura dentro de rango columnas
                             if (l>=0 && l<columnas) { 
                                 if (esMina(k,l)) {
