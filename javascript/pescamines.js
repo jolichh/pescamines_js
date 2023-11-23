@@ -58,13 +58,32 @@ function crearTaulell(files, columnes) {
 
 function obreCasella(x,y) {    
     let casella = document.getElementById(`${x}_${y}`);   
-    //si hay mina muestra imagen, si no hay, calcula adjacents
+    //si hay mina muestra imagen
     if (esMina(x,y)) {
-        casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`;        
+        casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`; 
+        alert("BOOM!!");     
     } 
+    //si no hay, muestra numero de minas adyacentes
     if (!esMina(x,y)) {
+        //si no hay minas adyacentes sigue abriendo recursivo
+        if (casella.dataset.numMines == 0) { 
+            obreCostats(x,y);//abre adyacente hasta que sea numeros >0
+        }
         casella.innerHTML = `<p>${casella.dataset.numMines}</p>`;        
     }    
+}
+//recorre los adyacentes y los abre
+function obreCostats(x, y) {
+    for(let i=x-1; i<=x+1; i++) {
+        for (let j=y-1;j<=y+1;j++) {
+            let casella = document.getElementById(`${i}_${j}`);
+            if (casella.dataset.numMines == 0) {
+                casella.innerHTML = `<p>b${casella.dataset.numMines}</p>`;
+                obreCostats(i,j);
+            } 
+            casella.innerHTML = `<p>a${casella.dataset.numMines}</p>`;
+        }
+    }
 }
 //estableix propietat de mina a true a un 17% de caselles totals
 function setMines() {
@@ -79,9 +98,7 @@ function setMines() {
 
 }
 //recorrerà taulell i apunta el número de mines adjacents de cada casella en una custom html: data-num-mines iniciada a 0
-function calculaAdjacents() {
-let counter = 0;
-    
+function calculaAdjacents() {    
     //recorre todo el tablero
     for (let i=0; i<filas;i++) {
         for (let j=0; j<columnas; j++) {
@@ -106,7 +123,6 @@ let counter = 0;
                 //setting recuento de minas adyacentes
                 setMinesAdjacents(i,j, nMines);   
             }        
-            counter++;     
         }       
     }
 }
