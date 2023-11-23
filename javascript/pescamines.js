@@ -78,12 +78,18 @@ function setMines() {
 
 }
 //recorrerà taulell i apunta el número de mines adjacents de cada casella en una custom html: data-num-mines iniciada a 0
-function calculaAdjacents(x,y) {
+function calculaAdjacents() {
     let nMines = 0;
+    //recorre todo el tablero y cuando encuentre una mina, suma a sus alrededores +1
     for (let i=0; i<filas;i++) {
         for (let j=columnas; j<columnas; j++) {
             if (esMina(i,j)) {
-                nMines++;
+                //si es mina sumamos a los adjacents +1 (9casillas)
+                for (let k=i-1;k<i+1;k++) {
+                    for (let l=j-1;l<j+1;l++) {
+                    
+                    }
+                }
             } 
         }
     }
