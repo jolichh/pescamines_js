@@ -5,7 +5,7 @@ let columnas = 0;
 //Demana numeros
 function iniciarPartida() {
     let numFiles= prompt("Número de files");
-    let numColumnes = prompt("Nuúmero de columnes");
+    let numColumnes = prompt("Número de columnes");
 
     //Comprovamos rango de filas
     if (numFiles > 30) {
@@ -68,20 +68,34 @@ function obreCasella(x,y) {
         //si no hay minas adyacentes sigue abriendo recursivo
         if (casella.dataset.numMines == 0) { 
             obreCostats(x,y);//abre adyacente hasta que sea numeros >0
-        }
-        casella.innerHTML = `<p>${casella.dataset.numMines}</p>`;        
+        } else {
+        casella.innerHTML = `<p>${casella.dataset.numMines}</p>`;      
+        }  
     }    
 }
 //recorre los adyacentes y los abre
 function obreCostats(x, y) {
+
     for(let i=x-1; i<=x+1; i++) {
+        if (i<0 || i>=filas) {
+            continue;
+        }
         for (let j=y-1;j<=y+1;j++) {
+            if (j<0 || j>=columnas) {
+                continue;
+            }
+            //alert(`abriendo casilla: ${i}_${j}`);            
             let casella = document.getElementById(`${i}_${j}`);
             if (casella.dataset.numMines == 0) {
-                casella.innerHTML = `<p>b${casella.dataset.numMines}</p>`;
+                casella.dataset.numMines = -1;
                 obreCostats(i,j);
-            } 
-            casella.innerHTML = `<p>a${casella.dataset.numMines}</p>`;
+            } else {
+                if (casella.dataset.numMines == -1) {
+                    casella.innerHTML = `<p>0</p>`;
+                } else {
+                    casella.innerHTML = `<p>${casella.dataset.numMines}</p>`;
+                }
+            }
         }
     }
 }
