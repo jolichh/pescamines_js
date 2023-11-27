@@ -1,10 +1,23 @@
 img {
     cursor: pointer;
+    width: 100%;
+    display: block; /*quita espaciado debajo las imagenes */
 }
 td {
-    width: 20px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border: 1px solid black;
+    
 }
 p {
     padding: 0;
-    margin: 0;
+    margin: 0;    
+    text-align: center;
+    font-weight: 600;
+}
+table {
+    border-collapse: collapse;
+    background-color: beige;
+    margin: 10px;
 }
