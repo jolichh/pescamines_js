@@ -1,6 +1,7 @@
 //Variables GLOBALES
 let filas = 0;
 let columnas = 0;
+let totalTrueMinas = 0; //total minas
 
 //Demana numeros
 function iniciarPartida() {
@@ -30,12 +31,6 @@ function iniciarPartida() {
     calculaAdjacents();
 }
 
-
-//Per destapar les caselles en cascada que {són zero o están al costat d'un zero} s'han de fer de forma recursiva
-
-//Al crear el onclick del img en format text, podeu passar-li els parametres i, j
-
-
 //Crea de manera dinàmica
 function crearTaulell(files, columnes) {
     let div = document.getElementById("taulell");
@@ -45,9 +40,9 @@ function crearTaulell(files, columnes) {
         taulell += `<tr>`;
 
         for (let j=0; j<columnes; j++) {
-            taulell += `<td id="${i}_${j}" data-mina="false" data-num-mines="0">`;
+            taulell += `<td id="${i}_${j}" data-mina="false" data-num-mines="0" data-tancat="true">`;
             
-            taulell += `<img type="button" onclick="obreCasella(${i}, ${j})" src="img/fons20px.jpg" width="20px">`;
+            taulell += `<img oncontextmenu="marcaCasella(${i}, ${j})" onclick="obreCasella(${i}, ${j})" src="img/fons20px.jpg" width="20px">`;
             taulell += `</td>`;
         }
         taulell += `<tr>`;
@@ -55,23 +50,72 @@ function crearTaulell(files, columnes) {
     taulell += `</table>`;    
     div.innerHTML = taulell;
 }
-
+// function marcaCasella(x, y) {
+//     let casella = document.getElementById(`${x}_${y}`);
+//     casella.innerHTML = `<img type="button" oncontextmenu="desmarcaCasella(${x}, ${y})" onclick="obreCasella(${x}, ${y})" src="img/badera20px.jpg" width="20px">`;
+// }
+// function desmarcaCasella(x, y) {
+//     let casella = document.getElementById(`${x}_${y}`);
+//     casella.innerHTML = `<img type="button" oncontextmenu="marcaCasella(${x}, ${y})" onclick="obreCasella(${x}, ${y})" src="img/fons20px.jpg" width="20px">`;
+// }
 function obreCasella(x,y) {    
     let casella = document.getElementById(`${x}_${y}`);   
     //si hay mina muestra imagen
     if (esMina(x,y)) {
         casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`; 
-        alert("BOOM!!");     
+        alert("BOOM!! Has mort");     
+        mostraTotesMines();
     } 
-    //si no hay, muestra numero de minas adyacentes
-    if (!esMina(x,y)) {
+    else if (!esMina(x,y)) {
+    //si no hay, muestra numero de minas adyacentes     
         //si no hay minas adyacentes sigue abriendo recursivo
         if (casella.dataset.numMines == 0) { 
             obreCostats(x,y);//abre adyacente hasta que sea numeros >0
         } else {
-        casella.innerHTML = `<p>${casella.dataset.numMines}</p>`;      
-        }  
-    }    
+            casella.innerHTML = `<p>${casella.dataset.numMines}</p>`;    
+            casella.dataset.tancat = 'false';  
+        }   
+        haGuanyat();
+    } 
+     
+}
+
+//retorna boolean segons si queden caselles no-mina sense obrir
+function haGuanyat() {
+    let count = 0;    
+    for (let i=0; i<filas;i++) {
+        for (let j=0; j<columnas; j++) { 
+            let casella = document.getElementById(`${i}_${j}`);
+            
+            if (casella.dataset.tancat == 'true') {
+                count++;
+            }
+        }
+    }
+   
+    if (count == 0) {
+        alert("Enhorabona! Has guanyat!!");
+    }
+}
+function mostraTotesMines() {
+    //recorre tota la taula i mostra mines restant
+    for (let i=0; i<filas;i++) {
+        for (let j=0; j<columnas; j++) {            
+            let casella = document.getElementById(`${i}_${j}`);
+            
+            if (esMina(i,j)) {
+                //muestra minas de la tabla
+                //asigna data como abiertas
+                casella.dataset.tancat = 'false';
+                casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`; 
+            } 
+            // else if (casella.dataset.tancat == true){
+            //     //deshabilita click
+            //     casella.innerHTML = `<img src="img/fons20px.jpg" width="20px">`; 
+            // }                
+            
+        }
+    }
 }
 //recorre los adyacentes y los abre
 function obreCostats(x, y) {
@@ -86,6 +130,8 @@ function obreCostats(x, y) {
             }
             //alert(`abriendo casilla: ${i}_${j}`);            
             let casella = document.getElementById(`${i}_${j}`);
+            
+            casella.dataset.tancat = 'false';
             if (casella.dataset.numMines == 0) {
                 casella.dataset.numMines = -1;
                 obreCostats(i,j);
@@ -101,15 +147,14 @@ function obreCostats(x, y) {
 }
 //estableix propietat de mina a true a un 17% de caselles totals
 function setMines() {
-    let totalTrue = Math.floor((filas*columnas)*0.17);
-    alert(totalTrue);
-    for (let i=0; i<totalTrue; i++) {
+    totalTrueMinas = Math.floor((filas*columnas)*0.17);
+    for (let i=0; i<totalTrueMinas; i++) {        
         let minaX = Math.floor(Math.random()*(filas));  //asegurar valor valido
         let minaY = Math.floor(Math.random()*(columnas));
         let casilla = document.getElementById(`${minaX}_${minaY}`);
         casilla.dataset.mina = 'true';
+        casilla.dataset.tancat = 'false';
     }
-
 }
 //recorrerà taulell i apunta el número de mines adjacents de cada casella en una custom html: data-num-mines iniciada a 0
 function calculaAdjacents() {    
@@ -142,7 +187,9 @@ function calculaAdjacents() {
 }
 
 function esMina(x, y) {
-    let casella = document.getElementById(`${x}_${y}`);
+    let casella = document.getElementById(`${x}_${y}`);  
+      //elimina click dret per defecte
+    casella.addEventListener("contextmenu", (e)=>{e.preventDefault()});
     if (casella.dataset.mina == 'true') {
         return true;
     }
@@ -151,5 +198,7 @@ function esMina(x, y) {
 //estableix a la casella de posicio l'atribut del número de mines a nMinesAdjacents
 function setMinesAdjacents(x, y, nMinesAdjacents) {   
     let casella = document.getElementById(`${x}_${y}`);   
+    //elimina click dret per defecte, este no funciona mucho
+    casella.addEventListener("contextmenu", (e)=>{e.preventDefault()});
     casella.dataset.numMines = `${nMinesAdjacents}`;
 }
