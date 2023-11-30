@@ -2,6 +2,7 @@
 let filas = 0;
 let columnas = 0;
 let totalTrueMinas = 0; //total minas
+let guanya = false;
 
 //Demana numeros
 function iniciarPartida() {
@@ -29,6 +30,8 @@ function iniciarPartida() {
     crearTaulell(filas, columnas);
     setMines();
     calculaAdjacents();
+    let div = document.getElementById("resultat");
+    div.innerHTML = "";
 }
 
 //Crea de manera dinàmica
@@ -50,14 +53,22 @@ function crearTaulell(files, columnes) {
     taulell += `</table>`;    
     div.innerHTML = taulell;
 }
-// function marcaCasella(x, y) {
-//     let casella = document.getElementById(`${x}_${y}`);
-//     casella.innerHTML = `<img type="button" oncontextmenu="desmarcaCasella(${x}, ${y})" onclick="obreCasella(${x}, ${y})" src="img/badera20px.jpg" width="20px">`;
-// }
-// function desmarcaCasella(x, y) {
-//     let casella = document.getElementById(`${x}_${y}`);
-//     casella.innerHTML = `<img type="button" oncontextmenu="marcaCasella(${x}, ${y})" onclick="obreCasella(${x}, ${y})" src="img/fons20px.jpg" width="20px">`;
-// }
+
+//deshabilita caselles tancades quan perd
+function deshabilita(){
+    for (let i=0; i<filas;i++) {
+        for (let j=0; j<columnas; j++) { 
+            let casella = document.getElementById(`${i}_${j}`);
+            
+            if (guanya && (casella.dataset.mina == 'true')) {
+                casella.innerHTML = `<img src="img/fons20px.jpg" width="20px">`;
+            } else 
+            if ((casella.dataset.tancat == 'true')) {
+                casella.innerHTML = `<img src="img/fons20px.jpg" width="20px">`;
+            }
+        }
+    }
+}
 function obreCasella(x,y) {    
     let casella = document.getElementById(`${x}_${y}`);   
     //si hay mina muestra imagen
@@ -65,6 +76,9 @@ function obreCasella(x,y) {
         casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`; 
         alert("BOOM!! Has mort");     
         mostraTotesMines();
+        deshabilita();
+        let div = document.getElementById("resultat");
+        div.innerHTML = "<h3>Has perdut... Torna a iniciar partida per jugar</h3>";
     } 
     else if (!esMina(x,y)) {
     //si no hay, muestra numero de minas adyacentes     
@@ -79,8 +93,7 @@ function obreCasella(x,y) {
     } 
      
 }
-
-//retorna boolean segons si queden caselles no-mina sense obrir
+//
 function haGuanyat() {
     let count = 0;    
     for (let i=0; i<filas;i++) {
@@ -94,7 +107,11 @@ function haGuanyat() {
     }
    
     if (count == 0) {
+        guanya = true;
         alert("Enhorabona! Has guanyat!!");
+        let div = document.getElementById("resultat");
+        div.innerHTML = "<h3>Has guanyat! Torna a iniciar partida per jugar</h3>";
+        deshabilita();
     }
 }
 function mostraTotesMines() {
@@ -108,11 +125,7 @@ function mostraTotesMines() {
                 //asigna data como abiertas
                 casella.dataset.tancat = 'false';
                 casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`; 
-            } 
-            // else if (casella.dataset.tancat == true){
-            //     //deshabilita click
-            //     casella.innerHTML = `<img src="img/fons20px.jpg" width="20px">`; 
-            // }                
+            }         
             
         }
     }
@@ -127,8 +140,7 @@ function obreCostats(x, y) {
         for (let j=y-1;j<=y+1;j++) {
             if (j<0 || j>=columnas) {
                 continue;
-            }
-            //alert(`abriendo casilla: ${i}_${j}`);            
+            }          
             let casella = document.getElementById(`${i}_${j}`);
             
             casella.dataset.tancat = 'false';
@@ -201,4 +213,38 @@ function setMinesAdjacents(x, y, nMinesAdjacents) {
     //elimina click dret per defecte, este no funciona mucho
     casella.addEventListener("contextmenu", (e)=>{e.preventDefault()});
     casella.dataset.numMines = `${nMinesAdjacents}`;
+    casella.style.color = "red";
+    setColor(casella);
+}
+
+function setColor(casella) {
+    let num = Number(casella.dataset.numMines);
+    switch (num) {
+        case 1:
+            casella.style.color = 'blue';
+            break;
+        case 2:
+            casella.style.color = "green";
+            break;
+        case 3:
+            casella.style.color = "red";
+            break;
+        case 4:
+            casella.style.color = "purple";
+            break;
+        case 5:
+            casella.style.color = "orange";
+            break;
+        case 6:
+            casella.style.color = "yellow";
+            break;
+        case 7:
+            casella.style.color = "pink";
+            break;
+        case 8:
+            casella.style.color = "brown";
+            break;
+        default:
+            casella.style.color = "grey"; //para los 0
+    };
 }
