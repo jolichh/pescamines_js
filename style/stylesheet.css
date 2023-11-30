@@ -11,6 +11,7 @@ td {
     height: 25px;
     padding: 0;
     border-style: inset;
+    border-width: 3px;
     border-color: gray;
 }
 p {
@@ -30,11 +31,8 @@ table {
     align-items: center;
 }
 button {
-    background-color: rgb(32, 213, 32);
     border-radius: 15px;
     padding: 10px;
     cursor: pointer;
-}
-button:hover {
-    background-color: green;    
+    background-color: rgb(36, 202, 36);
 }

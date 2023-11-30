@@ -74,9 +74,10 @@ function obreCasella(x,y) {
     //si hay mina muestra imagen
     if (esMina(x,y)) {
         casella.innerHTML = `<img src="img/mina20px.jpg" width="20px">`; 
-        alert("BOOM!! Has mort");     
+        alert("BOOM!! Has mort");   
+        deshabilita();  
         mostraTotesMines();
-        deshabilita();
+        
         let div = document.getElementById("resultat");
         div.innerHTML = "<h3>Has perdut... Torna a iniciar partida per jugar</h3>";
     } 
