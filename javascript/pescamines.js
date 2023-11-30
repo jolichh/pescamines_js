@@ -53,7 +53,14 @@ function crearTaulell(files, columnes) {
     taulell += `</table>`;    
     div.innerHTML = taulell;
 }
-
+function marcaCasella(x, y) {
+    let casella = document.getElementById(`${x}_${y}`);
+    casella.innerHTML = `<img type="button" oncontextmenu="desmarcaCasella(${x}, ${y})" onclick="obreCasella(${x}, ${y})" src="img/badera20px.jpg" width="20px">`;
+}
+function desmarcaCasella(x, y) {
+    let casella = document.getElementById(`${x}_${y}`);
+    casella.innerHTML = `<img type="button" oncontextmenu="marcaCasella(${x}, ${y})" onclick="obreCasella(${x}, ${y})" src="img/fons20px.jpg" width="20px">`;
+}
 //deshabilita caselles tancades quan perd
 function deshabilita(){
     for (let i=0; i<filas;i++) {
